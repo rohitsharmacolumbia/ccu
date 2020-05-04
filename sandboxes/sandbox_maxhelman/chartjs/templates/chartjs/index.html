@@ -1,0 +1,343 @@
+
+<!DOCTYPE html> 
+<html lang="en" dir="ltr"> 
+  
+<head> 
+  <meta charset="utf-8"> 
+  <title>CCU Analytics - Cases and Deaths</title> 
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> 
+  
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+  
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+  
+  
+  
+</head> 
+  
+<body class="container-fluid"> 
+  <center class="row"> 
+    <h1>CCU Analytics -  Cases and Deaths</h1> 
+  </center> 
+  <hr /> 
+  <div class="row1"> 
+      <div class="col-md-6"> 
+        <canvas id="myChartline3"></canvas> 
+      </div> 
+      <div class="col-md-6"> 
+        <canvas id="myChartline4"></canvas> 
+      </div> 
+    </div> 
+    <hr />
+  <div class="row2"> 
+    <div class="col-md-6"> 
+      <canvas id="myChartline1"></canvas> 
+    </div> 
+    <div class="col-md-6"> 
+      <canvas id="myChartline2"></canvas> 
+    </div> 
+  </div> 
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
+  
+  <script> 
+    var endpoint = '/api'; 
+  
+    $.ajax({ 
+      method: "GET", 
+      url: endpoint, 
+      success: function(data) { 
+        drawLineGraph_1(data, 'myChartline1');
+        drawLineGraph_2(data, 'myChartline2');
+        drawLineGraph_3(data, 'myChartline3');
+        drawLineGraph_4(data, 'myChartline4');
+        console.log("drawing"); 
+      }, 
+      error: function(error_data) { 
+        console.log(error_data); 
+      } 
+    }) 
+  
+  
+    function drawLineGraph_1(data, id) { 
+      var labels = data.labels; 
+      var chartdata_in_ccu = data.chartdata_in_ccu;
+      var chartdata_deceased = data.chartdata_deceased;
+      var chartdata_avg_age = data.chartdata_avg_age;
+      var ctx = document.getElementById(id).getContext('2d'); 
+      var chart = new Chart(ctx, { 
+        // The type of chart we want to create 
+        type: 'line', 
+  
+        // The data for our dataset 
+        data: { 
+          labels: labels, 
+          datasets: [{ 
+            label: 'People in CCU (Total)', 
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgb(54, 162, 235)',
+            fill: false,
+            data: chartdata_in_ccu, 
+          }, { 
+            label: 'People Deceased (Total)', 
+            borderColor: 'rgb(252, 101, 133)',
+            backgroundColor: 'rgb(252, 101, 133)',
+            fill: false,
+            data: chartdata_deceased, 
+          }, { 
+            label: 'Average Age (Total)', 
+            borderColor: 'rgb(75,192,192)',
+            backgroundColor: 'rgb(75,192,192)',
+            fill: false,
+            data: chartdata_avg_age, 
+          }]
+        }, 
+  
+        // Configuration options go here 
+        options: { 
+          title: {
+            display: true,
+            text: 'Cumulative People in CCU, Average Age, and Deaths (Confidential)'
+        },
+          scales: { 
+            xAxes: [{ 
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Date'
+              } 
+            }], 
+            yAxes: [{ 
+              ticks: { 
+                beginAtZero: true
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Patients'
+              } 
+            }]  
+          } 
+        } 
+  
+      });
+    } 
+  
+    function drawLineGraph_2(data, id) { 
+      var labels = data.labels; 
+      var chartdata_in_ccu = data.chartdata_in_ccu;
+      var chartdata_positive = data.chartdata_positive;
+      var chartdata_negative = data.chartdata_negative;
+      var chartdata_indeterminate = data.chartdata_indeterminate;
+      var chartdata_nt = data.chartdata_nt;
+      var ctx = document.getElementById(id).getContext('2d'); 
+      var chart = new Chart(ctx, { 
+        // The type of chart we want to create 
+        type: 'line', 
+  
+        // The data for our dataset 
+        data: { 
+          labels: labels, 
+          datasets: [{ 
+            label: 'People in CCU (Total)', 
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgb(54, 162, 235)',
+            fill: false,
+            data: chartdata_in_ccu, 
+          }, { 
+            label: 'COVID-19 Positive (Total)', 
+            borderColor: 'rgb(252, 101, 133)',
+            backgroundColor: 'rgb(252, 101, 133)',
+            fill: false,
+            data: chartdata_positive, 
+          }, { 
+            label: 'Covid-19 Negative (Total)', 
+            borderColor: 'rgb(75,192,192)',
+            backgroundColor: 'rgb(75,192,192)',
+            fill: false,
+            data: chartdata_negative, 
+          },
+          { 
+            label: 'COVID-19 Indeterminate (Total)', 
+            borderColor: 'rgb(255, 204, 84)',
+            backgroundColor: 'rgb(255, 204, 84)',
+            fill: false,
+            data: chartdata_indeterminate, 
+          },
+          { 
+            label: 'COVID-19 NT (Total)', 
+            borderColor: 'rgb(200, 188, 196)',
+            backgroundColor: 'rgb(200, 188, 196)',
+            fill: false,
+            data: chartdata_nt, 
+          }]
+        }, 
+        // Configuration options go here 
+        options: {
+          title: {
+            display: true,
+            text: 'Cumulative People in CCU and COVID-19 Test Results (Confidential)'
+        }, 
+          scales: { 
+            xAxes: [{ 
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Date'
+              } 
+            }], 
+            yAxes: [{ 
+              ticks: { 
+                beginAtZero: true
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Patients'
+              } 
+            }] 
+          } 
+        } 
+  
+      });
+    } 
+
+    function drawLineGraph_3(data, id) { 
+      var labels = data.labels; 
+      var chartdata_in_ccu = data.chartdata_in_ccu_daily;
+      var chartdata_avg_age = data.chartdata_avg_age_daily;
+      var ctx = document.getElementById(id).getContext('2d'); 
+      var chart = new Chart(ctx, { 
+        // The type of chart we want to create 
+        type: 'line', 
+  
+        // The data for our dataset 
+        data: { 
+          labels: labels, 
+          datasets: [{ 
+            label: 'People in CCU (Daily)', 
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgb(54, 162, 235)',
+            fill: false,
+            data: chartdata_in_ccu, 
+          },{ 
+            label: 'Average Age (Daily)', 
+            borderColor: 'rgb(75,192,192)',
+            backgroundColor: 'rgb(75,192,192)',
+            fill: false,
+            data: chartdata_avg_age, 
+          }]
+        }, 
+  
+        // Configuration options go here 
+        options: { 
+          title: {
+            display: true,
+            text: 'Daily People in CCU, Average Age, and Deaths (Confidential)'
+        },
+          scales: { 
+            xAxes: [{ 
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Date'
+              } 
+            }], 
+            yAxes: [{ 
+              ticks: { 
+                beginAtZero: true
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Patients'
+              } 
+            }]  
+          } 
+        } 
+  
+      });
+    } 
+
+    function drawLineGraph_4(data, id) { 
+      var labels = data.labels; 
+      var chartdata_in_ccu = data.chartdata_in_ccu_daily;
+      var chartdata_positive = data.chartdata_positive_daily;
+      var chartdata_negative = data.chartdata_negative_daily;
+      var chartdata_indeterminate = data.chartdata_indeterminate_daily;
+      var chartdata_nt = data.chartdata_nt_daily;
+      var ctx = document.getElementById(id).getContext('2d'); 
+      var chart = new Chart(ctx, { 
+        // The type of chart we want to create 
+        type: 'line', 
+  
+        // The data for our dataset 
+        data: { 
+          labels: labels, 
+          datasets: [{ 
+            label: 'People in CCU (Daily)', 
+            borderColor: 'rgb(54, 162, 235)',
+            backgroundColor: 'rgb(54, 162, 235)',
+            fill: false,
+            data: chartdata_in_ccu, 
+          }, { 
+            label: 'COVID-19 Positive (Daily)', 
+            borderColor: 'rgb(252, 101, 133)',
+            backgroundColor: 'rgb(252, 101, 133)',
+            fill: false,
+            data: chartdata_positive, 
+          }, { 
+            label: 'Covid-19 Negative (Daily)', 
+            borderColor: 'rgb(75,192,192)',
+            backgroundColor: 'rgb(75,192,192)',
+            fill: false,
+            data: chartdata_negative, 
+          },
+          { 
+            label: 'COVID-19 Indeterminate (Daily)', 
+            borderColor: 'rgb(255, 204, 84)',
+            backgroundColor: 'rgb(255, 204, 84)',
+            fill: false,
+            data: chartdata_indeterminate, 
+          },
+          { 
+            label: 'COVID-19 NT (Daily)', 
+            borderColor: 'rgb(200, 188, 196)',
+            backgroundColor: 'rgb(200, 188, 196)',
+            fill: false,
+            data: chartdata_nt, 
+          }]
+        }, 
+        // Configuration options go here 
+        options: {
+          title: {
+            display: true,
+            text: 'Daily People in CCU and COVID-19 Test Results (Confidential)'
+        }, 
+          scales: { 
+            xAxes: [{ 
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: 'Date'
+              } 
+            }], 
+            yAxes: [{ 
+              ticks: { 
+                beginAtZero: true
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Patients'
+              } 
+            }] 
+          } 
+        } 
+  
+      });
+    } 
+  </script>
+</body> 
+  
+</html> 
